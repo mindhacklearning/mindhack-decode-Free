@@ -1,0 +1,1176 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>MindHack Decode — Kenali Cara Berpikirmu</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;0,900;1,400;1,700&family=DM+Sans:wght@300;400;500;600&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#05080F;--bg2:#0B1120;--bg3:#111827;--bg4:#0D1729;
+  --text:#F0F4FF;--muted:#7B90B8;--dim:#3D4F6A;
+  --border:rgba(255,255,255,0.07);--border2:rgba(255,255,255,0.13);
+  --bara:#FB923C;--bara-bg:rgba(251,146,60,0.1);--bara-bd:rgba(251,146,60,0.3);
+  --tumbuh:#4ADE80;--tumbuh-bg:rgba(74,222,128,0.1);--tumbuh-bd:rgba(74,222,128,0.3);
+  --baja:#94A3B8;--baja-bg:rgba(148,163,184,0.1);--baja-bd:rgba(148,163,184,0.3);
+  --bumi:#F59E0B;--bumi-bg:rgba(245,158,11,0.1);--bumi-bd:rgba(245,158,11,0.3);
+  --arus:#38BDF8;--arus-bg:rgba(56,189,248,0.1);--arus-bd:rgba(56,189,248,0.3);
+  --gold:#C9A84C;--accent:#4ADE80;
+}
+*{margin:0;padding:0;box-sizing:border-box;}
+html{scroll-behavior:smooth;}
+body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);min-height:100vh;-webkit-font-smoothing:antialiased;}
+
+/* ── PROGRESS ── */
+.pbar{position:fixed;top:0;left:0;right:0;height:2px;background:rgba(255,255,255,0.04);z-index:999;}
+.pbar-fill{height:100%;background:linear-gradient(90deg,var(--tumbuh),var(--arus));transition:width .5s ease;border-radius:0 2px 2px 0;}
+
+/* ── LOGO ── */
+.logo{display:flex;align-items:center;gap:10px;margin-bottom:28px;}
+.logo-box{width:32px;height:32px;background:linear-gradient(135deg,#1a2e1a,#4ADE80);border-radius:9px;display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:900;color:#fff;}
+.logo-text{font-size:14px;font-weight:600;color:var(--muted);}
+
+/* ── SCREENS ── */
+.screen{display:none;max-width:480px;margin:0 auto;padding:28px 20px 64px;}
+.screen.active{display:block;}
+
+/* ── INTRO ── */
+.intro-hero{text-align:center;padding:12px 0 24px;}
+.intro-emoji{font-size:52px;display:block;margin-bottom:14px;}
+.intro-title{font-family:'Playfair Display',serif;font-size:28px;font-weight:900;line-height:1.25;margin-bottom:12px;}
+.intro-title span{color:var(--tumbuh);}
+.intro-desc{font-size:15px;color:var(--muted);line-height:1.75;margin-bottom:24px;}
+.intro-pills{display:flex;gap:8px;justify-content:center;flex-wrap:wrap;margin-bottom:28px;}
+.pill{background:rgba(255,255,255,0.05);border:1px solid var(--border2);border-radius:20px;padding:5px 14px;font-size:12px;color:var(--muted);}
+
+/* ── FORM ── */
+.form-card{background:var(--bg2);border:1px solid var(--border2);border-radius:18px;padding:20px 18px;margin-bottom:16px;}
+.fcard-title{font-size:11px;text-transform:uppercase;letter-spacing:1.5px;color:var(--gold);font-weight:600;margin-bottom:14px;}
+.frow{margin-bottom:13px;}
+.frow:last-child{margin-bottom:0;}
+.frow label{display:block;font-size:12.5px;color:var(--muted);margin-bottom:5px;}
+.frow input,.frow select{width:100%;background:var(--bg3);border:1px solid var(--border2);border-radius:10px;padding:11px 14px;font-size:14px;color:var(--text);font-family:'DM Sans',sans-serif;outline:none;-webkit-appearance:none;transition:border-color .2s;}
+.frow input:focus,.frow select:focus{border-color:var(--tumbuh);}
+.frow select option{background:var(--bg3);}
+.frow-2{display:grid;grid-template-columns:1fr 1fr;gap:11px;}
+.fopt-note{font-size:11px;color:var(--dim);margin-top:4px;}
+
+/* ── BUTTONS ── */
+.btn{width:100%;border:none;border-radius:14px;padding:15px;font-size:15px;font-weight:600;cursor:pointer;transition:all .2s;font-family:'DM Sans',sans-serif;}
+.btn-main{background:var(--tumbuh);color:#05080F;}
+.btn-main:hover{opacity:.9;transform:translateY(-1px);}
+.btn-ghost{background:transparent;border:1.5px solid var(--border2);color:var(--muted);margin-top:10px;}
+.btn-ghost:hover{border-color:var(--tumbuh);color:var(--tumbuh);}
+.btn-wa{background:#25D366;color:#fff;}
+.btn-pdf{background:rgba(255,255,255,0.05);border:1.5px solid var(--border2);color:var(--muted);display:flex;align-items:center;justify-content:center;gap:8px;border-radius:12px;padding:13px;font-size:13.5px;font-weight:600;cursor:pointer;width:100%;font-family:'DM Sans',sans-serif;transition:all .2s;}
+.btn-pdf:hover{border-color:var(--gold);color:var(--gold);}
+
+/* ── QUIZ ── */
+.q-meta{display:flex;align-items:center;justify-content:space-between;margin-bottom:22px;}
+.q-num{font-family:'Playfair Display',serif;font-size:34px;font-weight:900;color:var(--tumbuh);line-height:1;}
+.q-of{font-size:12px;color:var(--dim);margin-top:2px;}
+.q-dots{display:flex;gap:5px;flex-wrap:wrap;max-width:180px;justify-content:flex-end;}
+.q-dot{width:8px;height:8px;border-radius:50%;background:var(--border2);transition:all .3s;}
+.q-dot.done{background:var(--tumbuh);}
+.q-dot.current{background:var(--tumbuh);opacity:.5;transform:scale(1.2);}
+.q-text{font-size:17px;font-weight:600;line-height:1.55;margin-bottom:7px;}
+.q-hint{font-size:13px;color:var(--muted);margin-bottom:22px;line-height:1.6;font-style:italic;}
+.opts{display:flex;flex-direction:column;gap:10px;margin-bottom:26px;}
+.opt{background:var(--bg2);border:1.5px solid var(--border);border-radius:14px;padding:15px 17px;cursor:pointer;transition:all .22s;display:flex;align-items:flex-start;gap:13px;}
+.opt:hover{border-color:rgba(74,222,128,0.3);background:var(--bg3);}
+.opt.sel{border-color:var(--tumbuh);background:rgba(74,222,128,0.07);}
+.opt-letter{width:28px;height:28px;border-radius:50%;background:rgba(255,255,255,0.05);border:1px solid var(--border2);display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;color:var(--muted);flex-shrink:0;transition:all .2s;}
+.opt.sel .opt-letter{background:var(--tumbuh);color:#05080F;border-color:var(--tumbuh);}
+.opt-text{font-size:14px;line-height:1.6;padding-top:3px;}
+.q-nav{display:flex;gap:10px;}
+.btn-prev{width:50px;background:var(--bg2);border:1.5px solid var(--border2);border-radius:12px;padding:13px;cursor:pointer;color:var(--muted);font-size:16px;transition:all .2s;flex-shrink:0;}
+.btn-prev:hover:not(:disabled){border-color:var(--tumbuh);color:var(--tumbuh);}
+.btn-prev:disabled{opacity:.3;cursor:not-allowed;}
+.btn-next{flex:1;background:var(--bg2);border:1.5px solid var(--tumbuh);border-radius:12px;padding:13px;font-size:14px;font-weight:600;color:var(--tumbuh);cursor:pointer;transition:all .2s;font-family:'DM Sans',sans-serif;}
+.btn-next:hover:not(:disabled){background:rgba(74,222,128,0.08);}
+.btn-next:disabled{border-color:var(--border);color:var(--dim);cursor:not-allowed;}
+
+/* ── LOADING ── */
+.loading-wrap{text-align:center;padding:60px 0 40px;}
+.loading-icon{font-size:54px;display:block;margin-bottom:20px;animation:breathe 2.2s ease-in-out infinite;}
+@keyframes breathe{0%,100%{transform:scale(1);}50%{transform:scale(1.1);}}
+.loading-title{font-family:'Playfair Display',serif;font-size:22px;font-weight:700;margin-bottom:8px;}
+.loading-track{height:3px;background:rgba(255,255,255,0.06);border-radius:2px;margin:22px 0;overflow:hidden;}
+.loading-track-fill{height:100%;background:linear-gradient(90deg,var(--tumbuh),var(--arus));border-radius:2px;width:0;transition:width .4s ease;}
+.loading-msg{font-size:13.5px;color:var(--muted);min-height:22px;transition:opacity .3s;}
+.loading-steps{display:flex;flex-direction:column;gap:10px;margin-top:28px;text-align:left;}
+.l-step{display:flex;align-items:center;gap:12px;font-size:13px;color:var(--dim);transition:all .4s;}
+.l-step.done{color:var(--muted);}
+.l-step.active{color:var(--text);}
+.l-step-dot{width:8px;height:8px;border-radius:50%;background:var(--border2);flex-shrink:0;transition:all .3s;}
+.l-step.done .l-step-dot{background:var(--tumbuh);}
+.l-step.active .l-step-dot{background:var(--tumbuh);opacity:.6;animation:blink .8s infinite;}
+@keyframes blink{0%,100%{opacity:.4;}50%{opacity:1;}}
+
+/* ── HASIL ── */
+
+/* Quick Insight Box */
+.qi-box{border-radius:18px;padding:20px 18px;margin-bottom:14px;}
+.qi-header{display:flex;align-items:center;gap:10px;margin-bottom:16px;}
+.qi-emoji{font-size:32px;}
+.qi-label{font-size:10px;text-transform:uppercase;letter-spacing:2px;color:var(--muted);}
+.qi-tipe{font-family:'Playfair Display',serif;font-size:22px;font-weight:900;}
+.qi-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;}
+.qi-item{background:rgba(255,255,255,0.04);border-radius:12px;padding:12px 14px;}
+.qi-item-label{font-size:10px;text-transform:uppercase;letter-spacing:1px;color:var(--muted);margin-bottom:8px;font-weight:600;}
+.qi-item ul{list-style:none;display:flex;flex-direction:column;gap:5px;}
+.qi-item ul li{font-size:12.5px;color:var(--text);padding-left:14px;position:relative;line-height:1.5;}
+.qi-item ul li::before{content:'·';position:absolute;left:0;font-weight:700;}
+
+/* Kode unik */
+.kode-box{display:flex;align-items:center;justify-content:space-between;background:rgba(255,255,255,0.03);border:1px solid var(--border);border-radius:10px;padding:9px 14px;margin-bottom:14px;}
+.kode-label{font-size:10px;text-transform:uppercase;letter-spacing:1px;color:var(--dim);}
+.kode-val{font-family:'DM Mono',monospace;font-size:13px;color:var(--muted);letter-spacing:0.5px;}
+
+/* Score bars */
+.score-card{background:var(--bg2);border:1px solid var(--border2);border-radius:14px;padding:16px 18px;margin-bottom:14px;}
+.sc-title{font-size:10px;text-transform:uppercase;letter-spacing:1.2px;color:var(--muted);margin-bottom:14px;font-weight:600;}
+.sc-row{display:flex;align-items:center;gap:10px;margin-bottom:10px;}
+.sc-row:last-child{margin-bottom:0;}
+.sc-name{width:80px;font-size:12px;font-weight:600;}
+.sc-track{flex:1;height:7px;background:rgba(255,255,255,0.06);border-radius:4px;overflow:hidden;}
+.sc-fill{height:100%;border-radius:4px;transition:width 1.2s ease;}
+.sc-pct{width:34px;font-size:12px;font-weight:700;text-align:right;}
+
+/* Screenshot card */
+.ss-card{border-radius:18px;padding:28px 24px;margin-bottom:14px;text-align:center;position:relative;overflow:hidden;}
+.ss-card::before{content:'';position:absolute;inset:0;opacity:.04;background:repeating-linear-gradient(45deg,transparent,transparent 10px,rgba(255,255,255,.3) 10px,rgba(255,255,255,.3) 11px);}
+.ss-emoji{font-size:40px;display:block;margin-bottom:14px;position:relative;z-index:1;}
+.ss-tipe{font-size:11px;text-transform:uppercase;letter-spacing:2px;margin-bottom:6px;position:relative;z-index:1;}
+.ss-quote{font-family:'Playfair Display',serif;font-size:19px;font-style:italic;line-height:1.55;margin-bottom:16px;position:relative;z-index:1;}
+.ss-tag{font-size:11px;opacity:.6;position:relative;z-index:1;font-family:'DM Mono',monospace;}
+.ss-hint{text-align:center;font-size:11px;color:var(--dim);margin-bottom:14px;}
+
+/* Output sections */
+.out-sec{margin-bottom:12px;border-radius:16px;overflow:hidden;border:1px solid var(--border);}
+.out-head{padding:14px 18px 0;display:flex;align-items:center;gap:9px;}
+.out-icon{font-size:17px;}
+.out-label{font-size:10.5px;text-transform:uppercase;letter-spacing:1.2px;font-weight:700;color:var(--muted);}
+.out-body{padding:10px 18px 16px;}
+.out-body p{font-size:14px;color:var(--muted);line-height:1.75;margin-bottom:10px;}
+.out-body p:last-child{margin-bottom:0;}
+.out-body ul{list-style:none;display:flex;flex-direction:column;gap:7px;}
+.out-body ul li{font-size:13.5px;color:var(--muted);padding-left:16px;position:relative;line-height:1.6;}
+.out-body ul li::before{content:'·';position:absolute;left:0;font-weight:900;}
+.out-sec.s-std{background:var(--bg2);}
+.out-sec.s-confusion{background:linear-gradient(135deg,rgba(56,189,248,0.06),rgba(56,189,248,0.02));}
+.out-sec.s-confusion .out-label{color:var(--arus);}
+.out-sec.s-confusion ul li::before{color:var(--arus);}
+.out-sec.s-kekuatan{background:linear-gradient(135deg,rgba(74,222,128,0.07),rgba(74,222,128,0.02));}
+.out-sec.s-kekuatan .out-label{color:var(--tumbuh);}
+.out-sec.s-kekuatan ul li{color:var(--text);}
+.out-sec.s-kekuatan ul li::before{color:var(--tumbuh);content:'✦';}
+.out-sec.s-hambatan{background:rgba(251,146,60,0.04);}
+.out-sec.s-hambatan .out-label{color:var(--bara);}
+.out-sec.s-hambatan ul li::before{color:var(--bara);}
+.out-sec.s-dark{background:rgba(56,189,248,0.04);border-color:rgba(56,189,248,0.15);}
+.out-sec.s-dark .out-label{color:var(--arus);}
+.out-sec.s-dark .out-body p{color:var(--text);font-style:italic;font-size:15px;line-height:1.7;}
+.out-sec.s-mengapa{background:rgba(201,168,76,0.04);border-color:rgba(201,168,76,0.15);}
+.out-sec.s-mengapa .out-label{color:var(--gold);}
+.out-sec.s-mengapa ul li::before{color:var(--gold);}
+.c-sub{font-size:11px;text-transform:uppercase;letter-spacing:.8px;font-weight:700;margin-bottom:6px;margin-top:12px;color:var(--arus);}
+.tag-row{display:flex;flex-wrap:wrap;gap:7px;margin-bottom:10px;}
+.btag{background:rgba(74,222,128,0.1);border:1px solid rgba(74,222,128,0.25);border-radius:20px;padding:5px 13px;font-size:12px;color:var(--tumbuh);}
+.gpill-row{display:flex;flex-wrap:wrap;gap:7px;margin-bottom:10px;}
+.gpill{background:rgba(201,168,76,0.1);border:1px solid rgba(201,168,76,0.3);border-radius:20px;padding:5px 13px;font-size:12.5px;color:var(--gold);}
+
+/* Bonus goldar */
+.bonus-card{border-radius:14px;padding:14px 16px;margin-bottom:12px;border:1px solid;}
+
+/* Penutup */
+.penutup-box{background:linear-gradient(135deg,rgba(74,222,128,0.08),rgba(56,189,248,0.05));border:1px solid rgba(74,222,128,0.2);border-radius:16px;padding:22px 20px;text-align:center;margin-bottom:12px;}
+.penutup-quote{font-family:'Playfair Display',serif;font-size:17px;font-style:italic;line-height:1.7;margin-bottom:14px;}
+.penutup-note{font-size:13px;color:var(--muted);line-height:1.7;}
+.penutup-note strong{color:var(--tumbuh);}
+
+/* CTA */
+.cta-box{background:linear-gradient(135deg,rgba(37,211,102,0.08),rgba(37,211,102,0.03));border:1.5px solid rgba(37,211,102,0.28);border-radius:18px;padding:22px 18px;margin-bottom:12px;}
+.cta-title{font-family:'Playfair Display',serif;font-size:20px;font-weight:700;margin-bottom:6px;}
+.cta-sub{font-size:13.5px;color:var(--muted);line-height:1.7;margin-bottom:16px;}
+.unlock-list{list-style:none;display:flex;flex-direction:column;gap:7px;margin-bottom:18px;background:rgba(255,255,255,0.03);border-radius:12px;padding:14px 16px;}
+.unlock-list li{font-size:13.5px;color:var(--text);display:flex;align-items:flex-start;gap:10px;line-height:1.6;}
+.unlock-list li::before{content:'✓';color:var(--tumbuh);font-weight:700;flex-shrink:0;}
+.cta-note{font-size:11.5px;color:var(--dim);text-align:center;margin-top:10px;line-height:1.6;}
+.cta-note strong{color:var(--gold);}
+
+.btn-save-row{display:flex;gap:10px;margin-bottom:12px;}
+.btn-save-row .btn-pdf{flex:1;}
+
+.result-bisa-berubah{font-size:12px;color:var(--dim);text-align:center;line-height:1.7;margin-bottom:12px;border-top:1px solid var(--border);padding-top:14px;}
+.restart-btn{width:100%;background:transparent;border:1px solid var(--border);border-radius:12px;padding:12px;font-size:13px;color:var(--dim);cursor:pointer;font-family:'DM Sans',sans-serif;transition:all .2s;}
+.restart-btn:hover{border-color:var(--tumbuh);color:var(--tumbuh);}
+
+/* ── FORM LAPORAN LENGKAP ── */
+.form-page-title{margin-bottom:24px;}
+.fpt-tag{font-size:11px;text-transform:uppercase;letter-spacing:1.5px;color:var(--muted);margin-bottom:6px;}
+.fpt-h{font-family:'Playfair Display',serif;font-size:24px;font-weight:700;margin-bottom:8px;}
+.fpt-sub{font-size:14px;color:var(--muted);line-height:1.7;}
+
+/* ── DISCLAIMER ── */
+.disclaimer{font-size:12px;color:var(--dim);line-height:1.65;text-align:center;border-top:1px solid var(--border);padding-top:14px;margin-bottom:14px;}
+
+@media(max-width:420px){
+  .intro-title{font-size:24px;}
+  .qi-tipe{font-size:19px;}
+  .ss-quote{font-size:17px;}
+  .frow-2{grid-template-columns:1fr;}
+  .btn-save-row{flex-direction:column;}
+}
+</style>
+</head>
+<body>
+<div class="pbar"><div class="pbar-fill" id="pbarFill" style="width:0%"></div></div>
+
+<!-- ══════════════════════════════════════
+     S1 — INTRO + FORM
+══════════════════════════════════════ -->
+<div class="screen active" id="sIntro">
+  <div class="logo"><div class="logo-box">MH</div><div class="logo-text">MindHack Decode</div></div>
+  <div class="intro-hero">
+    <span class="intro-emoji">🌱</span>
+    <div class="intro-title">Kenali cara<br><span>berpikirmu.</span></div>
+    <div class="intro-desc">Bukan tes IQ. Bukan ramalan.<br>Ini tentang memahami <em>kenapa kamu sering bingung</em><br>dan bagaimana cara berkembang yang paling cocok untukmu.</div>
+    <div class="intro-pills">
+      <span class="pill">⏱ 3–5 menit</span>
+      <span class="pill">🆓 Gratis</span>
+      <span class="pill">🧠 15 pertanyaan</span>
+      <span class="pill">📱 Mobile friendly</span>
+    </div>
+  </div>
+
+  <div class="form-card">
+    <div class="fcard-title">Data Diri</div>
+    <div class="frow">
+      <label>Nama Panggilan *</label>
+      <input type="text" id="fNama" placeholder="contoh: Aditya">
+    </div>
+    <div class="frow">
+      <label>Profesi / Pelajar / Peran Utama</label>
+      <select id="fProfesi">
+        <option value="">Pilih yang paling mendekati</option>
+        <option value="pelajar">Pelajar / Mahasiswa</option>
+        <option value="guru">Guru / Pendidik</option>
+        <option value="founder">Entrepreneur / Founder</option>
+        <option value="ibu">Ibu Rumah Tangga</option>
+        <option value="profesional">Profesional / Karyawan</option>
+        <option value="kreator">Kreator / Konten</option>
+        <option value="lainnya">Lainnya</option>
+      </select>
+    </div>
+    <div class="frow-2">
+      <div class="frow" style="margin:0">
+        <label>Tanggal Lahir <span style="color:var(--dim)">(opsional)</span></label>
+        <input type="date" id="fTgl">
+      </div>
+      <div class="frow" style="margin:0">
+        <label>Golongan Darah <span style="color:var(--dim)">(opsional)</span></label>
+        <select id="fGoldar">
+          <option value="">Pilih</option>
+          <option value="O">O</option>
+          <option value="A">A</option>
+          <option value="B">B</option>
+          <option value="AB">AB</option>
+          <option value="?">Tidak tahu</option>
+        </select>
+      </div>
+    </div>
+  </div>
+
+  <button class="btn btn-main" onclick="mulaiQuiz()">Mulai Quiz →</button>
+  <div style="text-align:center;margin-top:14px;font-size:12px;color:var(--dim);line-height:1.6;">
+    Tidak ada jawaban benar atau salah.<br>Pilih yang paling mendekati dirimu.
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════
+     S2 — QUIZ
+══════════════════════════════════════ -->
+<div class="screen" id="sQuiz">
+  <div class="logo"><div class="logo-box">MH</div><div class="logo-text">MindHack Decode</div></div>
+  <div class="q-meta">
+    <div>
+      <div class="q-num" id="qNum">01</div>
+      <div class="q-of">dari 15 pertanyaan</div>
+    </div>
+    <div class="q-dots" id="qDots"></div>
+  </div>
+  <div class="q-text" id="qText"></div>
+  <div class="q-hint" id="qHint"></div>
+  <div class="opts" id="qOpts"></div>
+  <div class="q-nav">
+    <button class="btn-prev" id="btnPrev" onclick="prevQ()">←</button>
+    <button class="btn-next" id="btnNext" onclick="nextQ()" disabled>Lanjut →</button>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════
+     S3 — LOADING
+══════════════════════════════════════ -->
+<div class="screen" id="sLoading">
+  <div class="loading-wrap">
+    <span class="loading-icon">🌱</span>
+    <div class="loading-title">Membaca polamu...</div>
+    <div class="loading-track"><div class="loading-track-fill" id="lTrack"></div></div>
+    <div class="loading-msg" id="lMsg"></div>
+    <div class="loading-steps">
+      <div class="l-step" id="ls0"><div class="l-step-dot"></div>Menganalisis pola jawaban...</div>
+      <div class="l-step" id="ls1"><div class="l-step-dot"></div>Membaca kecenderungan berpikir...</div>
+      <div class="l-step" id="ls2"><div class="l-step-dot"></div>Mencari confusion pattern...</div>
+      <div class="l-step" id="ls3"><div class="l-step-dot"></div>Memetakan arah growth...</div>
+      <div class="l-step" id="ls4"><div class="l-step-dot"></div>Menyusun insight personal...</div>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════
+     S4 — HASIL RINGKAS
+══════════════════════════════════════ -->
+<div class="screen" id="sHasil">
+  <div class="logo"><div class="logo-box">MH</div><div class="logo-text">MindHack Decode</div></div>
+
+  <!-- 0. KODE UNIK -->
+  <div class="kode-box">
+    <div class="kode-label">Kode Hasil</div>
+    <div class="kode-val" id="kodeUnik">MH-???-250516</div>
+  </div>
+
+  <!-- 1. QUICK INSIGHT BOX -->
+  <div class="qi-box" id="qiBox">
+    <div class="qi-header">
+      <div class="qi-emoji" id="qiEmoji"></div>
+      <div>
+        <div class="qi-label">Karakter Dominan</div>
+        <div class="qi-tipe" id="qiTipe"></div>
+      </div>
+    </div>
+    <div class="qi-grid">
+      <div class="qi-item">
+        <div class="qi-item-label">Kekuatan</div>
+        <ul id="qiKekuatan"></ul>
+      </div>
+      <div class="qi-item">
+        <div class="qi-item-label">Hambatan</div>
+        <ul id="qiHambatan"></ul>
+      </div>
+      <div class="qi-item" style="grid-column:1/-1;">
+        <div class="qi-item-label">Yang Paling Dibutuhkan</div>
+        <ul id="qiButuh"></ul>
+      </div>
+    </div>
+  </div>
+
+  <!-- 2. DISTRIBUSI KARAKTER -->
+  <div class="score-card">
+    <div class="sc-title">Campuran Karaktermu</div>
+    <div id="scoreBars"></div>
+  </div>
+
+  <!-- 3. SCREENSHOT CARD -->
+  <div class="ss-card" id="ssCard">
+    <span class="ss-emoji" id="ssEmoji"></span>
+    <div class="ss-tipe" id="ssTipe"></div>
+    <div class="ss-quote" id="ssQuote"></div>
+    <div class="ss-tag" id="ssTag">MindHack Decode · mindhacklearning</div>
+  </div>
+  <div class="ss-hint">↑ Bagian ini cocok untuk di-screenshot & dibagikan ke story</div>
+
+  <!-- 4. SUMMARY -->
+  <div class="out-sec s-std">
+    <div class="out-head"><div class="out-icon">🧬</div><div class="out-label">Kamu Cenderung</div></div>
+    <div class="out-body"><ul id="outSummary"></ul></div>
+  </div>
+
+  <!-- 5. CONFUSION DECODER -->
+  <div class="out-sec s-confusion">
+    <div class="out-head"><div class="out-icon">😵</div><div class="out-label">Confusion Decoder</div></div>
+    <div class="out-body" id="outConfusion"></div>
+  </div>
+
+  <!-- 6. POLA BELAJAR -->
+  <div class="out-sec s-std">
+    <div class="out-head"><div class="out-icon">📚</div><div class="out-label">Pola Belajar</div></div>
+    <div class="out-body">
+      <div class="tag-row" id="outBelajarTags"></div>
+      <p id="outBelajarDesc"></p>
+    </div>
+  </div>
+
+  <!-- 7. KEKUATAN -->
+  <div class="out-sec s-kekuatan">
+    <div class="out-head"><div class="out-icon">⚡</div><div class="out-label">Kekuatan Utama</div></div>
+    <div class="out-body"><ul id="outKekuatan"></ul></div>
+  </div>
+
+  <!-- 8. HAMBATAN -->
+  <div class="out-sec s-hambatan">
+    <div class="out-head"><div class="out-icon">🌊</div><div class="out-label">Yang Sering Menghambat</div></div>
+    <div class="out-body">
+      <ul id="outHambatan"></ul>
+      <p id="outHambatanNote" style="color:var(--dim);font-size:12.5px;font-style:italic;margin-top:10px;"></p>
+    </div>
+  </div>
+
+  <!-- 9. DARK MIRROR -->
+  <div class="out-sec s-dark">
+    <div class="out-head"><div class="out-icon">🪞</div><div class="out-label">Yang Jarang Kamu Akui</div></div>
+    <div class="out-body"><p id="outDarkMirror"></p></div>
+  </div>
+
+  <!-- 10. GROWTH -->
+  <div class="out-sec s-std">
+    <div class="out-head"><div class="out-icon">🚀</div><div class="out-label">Arah Growth</div></div>
+    <div class="out-body">
+      <div class="gpill-row" id="outGrowthPills"></div>
+      <p id="outGrowthDesc"></p>
+    </div>
+  </div>
+
+  <!-- 11. MENGAPA -->
+  <div class="out-sec s-mengapa">
+    <div class="out-head"><div class="out-icon">💡</div><div class="out-label">Mengapa Kamu Dapat Hasil Ini?</div></div>
+    <div class="out-body"><ul id="outMengapa"></ul></div>
+  </div>
+
+  <!-- 12. BONUS GOLDAR -->
+  <div id="bonusGoldar"></div>
+
+  <!-- 13. PENUTUP -->
+  <div class="penutup-box">
+    <div class="penutup-quote">"Banyak orang sebenarnya bukan tidak mampu berkembang…<br>mereka cuma terlalu lama bingung sendirian."</div>
+    <div class="penutup-note">Hasil ini bukan label permanen. Gunakan sebagai <strong>titik awal memahami dirimu lebih dalam.</strong></div>
+  </div>
+
+  <!-- 14. SIMPAN PDF -->
+  <div class="btn-save-row">
+    <button class="btn-pdf" onclick="simpanHasil()">📄 Simpan Hasil Gratis</button>
+    <button class="btn-pdf" onclick="simpanJawaban()">📥 Simpan Jawaban Quiz</button>
+  </div>
+
+  <!-- 15. CTA LAPORAN LENGKAP -->
+  <div class="cta-box">
+    <div class="cta-title">🌿 Lanjut eksplorasi dirimu</div>
+    <div class="cta-sub">Laporan ringkas ini hanya permukaan. Di laporan lengkap, kamu akan membuka bagian yang lebih dalam tentang dirimu.</div>
+    <ul class="unlock-list">
+      <li>Analisis karakter 8 dimensi yang jauh lebih detail</li>
+      <li>Blindspot terbesar yang sering tidak kamu sadari</li>
+      <li>Ramalan siklus energi 5 tahun ke depan</li>
+      <li>Arah karier, niche, dan personal branding untukmu</li>
+      <li>Panduan 7 langkah praktis harian sesuai karaktermu</li>
+      <li>Rekomendasi cara belajar hal spesifik (bukan umum)</li>
+    </ul>
+    <button class="btn btn-wa" onclick="mintaLaporan()">💬 Minta Laporan Lengkap</button>
+    <div class="cta-note">Laporan ringkas: <strong>Gratis ✓</strong> &nbsp;·&nbsp; Laporan lengkap: <strong>Berbayar</strong><br>Dikirim manual via WhatsApp dalam 1×24 jam kerja</div>
+  </div>
+
+  <div class="disclaimer">MindHack Decode adalah alat refleksi diri berbasis pola jawaban, kecenderungan perilaku, dan framework pengembangan personal.<br>Gunakan sebagai alat eksplorasi diri, bukan label permanen.</div>
+
+  <div class="result-bisa-berubah">
+    Hasilmu hari ini adalah cerminan pola dominanmu saat ini.<br>
+    Saat cara berpikir, lingkungan, dan pengalamanmu berubah — hasilmu pun bisa berkembang.
+  </div>
+
+  <button class="restart-btn" onclick="restart()">↺ Ulangi Quiz</button>
+</div>
+
+<!-- ══════════════════════════════════════
+     S5 — FORM LAPORAN LENGKAP
+══════════════════════════════════════ -->
+<div class="screen" id="sForm">
+  <div class="logo"><div class="logo-box">MH</div><div class="logo-text">MindHack Decode</div></div>
+  <div class="form-page-title">
+    <div class="fpt-tag">Langkah selanjutnya</div>
+    <div class="fpt-h">Laporan Lengkap Personal</div>
+    <div class="fpt-sub">Lengkapi data di bawah. Laporan dikirim via WhatsApp dalam 1×24 jam kerja.</div>
+  </div>
+
+  <div class="form-card">
+    <div class="fcard-title">Data Pribadi</div>
+    <div class="frow-2">
+      <div class="frow" style="margin:0"><label>Nama Depan *</label><input type="text" id="lNamaDepan"></div>
+      <div class="frow" style="margin:0"><label>Nama Belakang</label><input type="text" id="lNamaBelakang"></div>
+    </div>
+    <div style="height:11px"></div>
+    <div class="frow"><label>Tempat Lahir</label><input type="text" id="lTempatLahir" placeholder="Kota / Kabupaten"></div>
+    <div class="frow-2">
+      <div class="frow" style="margin:0"><label>Tanggal Lahir *</label><input type="date" id="lTgl"></div>
+      <div class="frow" style="margin:0"><label>Jam Lahir</label><input type="time" id="lJam"></div>
+    </div>
+    <div style="height:11px"></div>
+    <div class="frow-2">
+      <div class="frow" style="margin:0">
+        <label>Golongan Darah *</label>
+        <select id="lGoldar"><option value="">Pilih</option><option>O</option><option>A</option><option>B</option><option>AB</option><option value="?">Tidak tahu</option></select>
+      </div>
+      <div class="frow" style="margin:0">
+        <label>Agama</label>
+        <select id="lAgama"><option value="">Pilih</option><option>Islam</option><option>Kristen</option><option>Katolik</option><option>Hindu</option><option>Buddha</option><option>Konghucu</option></select>
+      </div>
+    </div>
+  </div>
+
+  <div class="form-card">
+    <div class="fcard-title">Latar Belakang</div>
+    <div class="frow"><label>Profesi / Jurusan</label><input type="text" id="lProfesi" placeholder="Guru Matematika / S1 Teknik..."></div>
+    <div class="frow"><label>Kesibukan Saat Ini</label><input type="text" id="lKesibukan" placeholder="Mengajar, bisnis, konten..."></div>
+  </div>
+
+  <div class="form-card">
+    <div class="fcard-title">Kontak</div>
+    <div class="frow"><label>Nomor WhatsApp *</label><input type="tel" id="lWA" placeholder="08xx xxxx xxxx"></div>
+    <div class="frow"><label>Email <span style="color:var(--dim)">(opsional)</span></label><input type="email" id="lEmail" placeholder="nama@email.com"></div>
+  </div>
+
+  <button class="btn btn-wa" onclick="kirimKeWA()" style="margin-bottom:10px;">💬 Kirim & Minta Laporan Lengkap</button>
+  <button class="btn btn-ghost" onclick="showScreen('sHasil')">← Kembali ke Hasil</button>
+</div>
+
+<!-- ══════════════════════════════════════
+     JAVASCRIPT
+══════════════════════════════════════ -->
+<script>
+// ─────────────────────────────────────────
+// DATA PERTANYAAN
+// Scoring: [Bara, Tumbuh, Baja, Bumi, Arus]
+// ─────────────────────────────────────────
+const QS=[
+  {t:"Saat akan mulai belajar sesuatu yang baru, apa yang paling bikin kamu semangat?",h:"Pilih yang paling mendekati perasaanmu, bukan yang terlihat bagus.",o:[
+    {t:"Membayangkan betapa kerennya aku nanti kalau sudah bisa — visualisasi impian akhirnya.",s:[0,2,0,0,0]},
+    {t:"Rasa penasaran mendalam — aku harus paham sistemnya sampai ke akar-akarnya.",s:[0,0,2,0,0]},
+    {t:"Tahu bahwa ini akan memberi dampak nyata buat orang-orang di sekitarku.",s:[0,0,0,0,2]},
+    {t:"Ada yang menantangku, atau aku lihat orang lain berhasil dan ingin melampaui.",s:[0,0,0,2,0]},
+  ]},
+  {t:"Ketika dapat ide atau tugas baru, kamu biasanya...",h:"Jujur — mana yang paling sering terjadi?",o:[
+    {t:"Langsung eksekusi. Mikir belakangan — yang penting mulai dulu.",s:[2,0,1,0,0]},
+    {t:"Muter-muter dulu di kepala sebelum bergerak — butuh waktu pemanasan.",s:[0,2,0,0,0]},
+    {t:"Tergantung mood hari ini — kadang langsung, kadang ditunda.",s:[0,0,0,0,2]},
+    {t:"Kumpulkan fakta dulu sebelum mulai — tidak mau asal jalan.",s:[0,0,0,2,0]},
+  ]},
+  {t:"Saat ada tekanan atau deadline mendadak, reaksimu biasanya...",h:"",o:[
+    {t:"Panik sebentar, tapi energiku justru naik saat tertekan — langsung jalan.",s:[2,0,0,0,0]},
+    {t:"Tetap jalan pelan tapi pasti — tidak mudah panik, tidak terburu-buru.",s:[0,2,0,0,0]},
+    {t:"Langsung buat rencana sistematis — tanpa banyak emosi.",s:[0,0,2,0,0]},
+    {t:"Bekerja keras lebih dari biasanya — sudah terbiasa dengan tekanan.",s:[0,0,0,2,0]},
+    {t:"Mencoba tetap tenang dan mengalir — kalau dipaksa, justru tidak produktif.",s:[0,0,0,0,2]},
+  ]},
+  {t:"Kelemahan mana yang paling sering kamu rasakan sendiri?",h:"Ini yang paling susah diakui — tapi justru paling akurat. Pilih yang paling jujur.",o:[
+    {t:"Mudah kehilangan semangat kalau tidak ada yang mengapresiasi atau mendukung.",s:[2,0,0,0,0]},
+    {t:"Punya banyak ide bagus tapi jarang ada yang benar-benar selesai.",s:[0,2,0,0,0]},
+    {t:"Terlalu perfeksionis — sering tidak mulai karena belum merasa siap.",s:[0,0,2,1,0]},
+    {t:"Banyak hal dimulai tapi tidak dituntaskan — lebih suka mengalir ke hal berikutnya.",s:[0,0,0,0,2]},
+  ]},
+  {t:"Kamu belajar paling efektif ketika...",h:"",o:[
+    {t:"Ada orang yang menjelaskan langsung dan bisa aku rasakan feel-nya.",s:[2,0,0,0,0]},
+    {t:"Dikasih gambaran besar dulu — baru detail. Jangan langsung step-by-step.",s:[0,2,0,0,0]},
+    {t:"Ada kerangka yang logis dan sistematis dari awal.",s:[0,0,2,0,0]},
+    {t:"Punya waktu mengulang-ulang dan menyerap pelan-pelan.",s:[0,0,0,2,0]},
+    {t:"Suasananya nyaman, tidak ada tekanan, bisa mengikuti ritme sendiri.",s:[0,0,0,0,2]},
+  ]},
+  {t:"Hal yang paling bikin frustrasi dalam belajar atau bekerja adalah...",h:"",o:[
+    {t:"Tidak ada yang peduli atau mengapresiasi — kerasa sia-sia.",s:[2,0,0,0,0]},
+    {t:"Dipaksa ikut aturan kaku tanpa boleh eksplorasi sendiri.",s:[0,2,0,0,0]},
+    {t:"Harus bekerja dengan orang yang tidak logis.",s:[0,0,2,0,0]},
+    {t:"Dipaksa cepat tanpa waktu untuk benar-benar memahami.",s:[0,0,0,2,0]},
+    {t:"Ada konflik atau suasana yang tidak harmonis.",s:[0,0,0,0,2]},
+  ]},
+  {t:"Dalam hubungan dengan orang lain, kamu lebih sering...",h:"",o:[
+    {t:"Menjadi pusat perhatian — orang-orang suka mendengarkanku bicara.",s:[2,0,0,0,0]},
+    {t:"Punya lingkaran kecil yang dipilih selektif — kualitas lebih penting dari kuantitas.",s:[0,2,0,0,0]},
+    {t:"Menghargai orang kompeten dan to the point — tidak suka basa-basi.",s:[0,0,2,0,0]},
+    {t:"Setia dan bisa diandalkan — orang tahu bisa percaya padaku.",s:[0,0,0,2,0]},
+    {t:"Menjadi pendengar dan penyeimbang — tidak suka konflik.",s:[0,0,0,0,2]},
+  ]},
+  {t:"Saat dikritik atau mendapat feedback negatif, biasanya kamu...",h:"",o:[
+    {t:"Merasa sakit hati lebih dulu — butuh waktu sebelum bisa menerima.",s:[2,0,0,0,0]},
+    {t:"Kritis balik — kalau tidak masuk akal, tidak akan langsung aku terima.",s:[0,2,0,0,0]},
+    {t:"Analisis dulu apakah kritiknya valid — kalau logis, langsung diperbaiki.",s:[0,0,2,0,0]},
+    {t:"Menerimanya sebagai bahan untuk jadi lebih baik.",s:[0,0,0,2,0]},
+    {t:"Coba tidak dibawa perasaan, tapi kalau terlalu sering, aku bisa menjauh diam-diam.",s:[0,0,0,0,2]},
+  ]},
+  {t:"Kamu bekerja paling produktif ketika...",h:"",o:[
+    {t:"Ada orang lain di sekitar — energiku naik kalau ada yang lihat dan mendukung.",s:[2,0,0,0,0]},
+    {t:"Bebas bereksperimen tanpa ada yang mengatur langkah-langkahku.",s:[0,2,0,0,0]},
+    {t:"Punya target yang jelas dan timeline yang realistis.",s:[0,0,2,0,0]},
+    {t:"Lingkungannya teratur dan aku tahu persis apa yang harus dilakukan.",s:[0,0,0,2,0]},
+    {t:"Tidak ada tekanan waktu dan bisa mengikuti alur yang natural.",s:[0,0,0,0,2]},
+  ]},
+  {t:"Dalam hal uang dan keputusan finansial, kamu cenderung...",h:"",o:[
+    {t:"Cukup impulsif — kalau ada yang menarik dan mau, cenderung langsung.",s:[2,0,0,0,0]},
+    {t:"Selektif — tidak sembarangan, tapi kalau sudah mau, susah ditahan.",s:[0,2,0,0,0]},
+    {t:"Kalkulatif — selalu ada analisis untung-rugi sebelum keputusan besar.",s:[0,0,2,0,0]},
+    {t:"Hemat dan terencana — uang harus diatur dengan baik dari awal.",s:[0,0,0,2,0]},
+    {t:"Fleksibel — tidak terlalu ketat tapi juga tidak boros.",s:[0,0,0,0,2]},
+  ]},
+  {t:"Saat harus membuat keputusan penting, kamu lebih mengandalkan...",h:"",o:[
+    {t:"Perasaan dan intuisi — kalau rasanya benar, itu cukup.",s:[1,0,0,0,2]},
+    {t:"Visi dan gambaran besar — apakah selaras dengan impian dan nilai-nilaiku?",s:[0,2,0,0,0]},
+    {t:"Logika dan analisis — data dan fakta lebih bisa dipercaya.",s:[0,0,2,0,0]},
+    {t:"Pengalaman dan bukti nyata — apa yang sudah terbukti bekerja sebelumnya?",s:[0,0,0,2,0]},
+  ]},
+  {t:"Hasil belajar yang paling memuaskan bagimu adalah...",h:"",o:[
+    {t:"Bisa menyampaikan dan memengaruhi orang lain dengan apa yang kupelajari.",s:[2,0,0,0,0]},
+    {t:"Menghasilkan sesuatu yang orisinal dan berbeda dari yang sudah ada.",s:[0,2,0,0,0]},
+    {t:"Menguasai sistem dan bisa menjelaskannya secara logis.",s:[0,0,2,0,0]},
+    {t:"Memiliki pemahaman yang solid dan tidak mudah goyah.",s:[0,0,0,2,0]},
+    {t:"Bisa membantu orang lain dengan apa yang sudah kupelajari.",s:[0,0,0,0,2]},
+  ]},
+  {t:"Soal rutinitas harian, kamu lebih...",h:"",o:[
+    {t:"Suka variasi — rutinitas yang sama setiap hari bikin cepat bosan.",s:[2,1,0,0,0]},
+    {t:"Punya sistem ketat sendiri — bekerja paling baik dengan jadwal terstruktur.",s:[0,0,2,0,0]},
+    {t:"Punya rutinitas konsisten — perubahan mendadak bisa menggangguku.",s:[0,0,0,2,0]},
+    {t:"Santai dan fleksibel — aku ikuti apa yang terasa benar hari ini.",s:[0,0,0,0,2]},
+  ]},
+  {t:"Saat ada aturan yang menurutmu tidak masuk akal, biasanya kamu...",h:"",o:[
+    {t:"Ekspresi frustrasinya keluar — susah pura-pura setuju kalau tidak setuju.",s:[2,0,0,0,0]},
+    {t:"Diam-diam mencari jalan sendiri yang lebih sesuai.",s:[0,2,0,0,0]},
+    {t:"Mengkritisi secara logis dan mencoba mengubahnya lewat argumen.",s:[0,0,2,0,0]},
+    {t:"Ikut dulu sambil tunggu momen yang tepat.",s:[0,0,0,2,0]},
+    {t:"Mencoba menyesuaikan diri — tidak ingin ada konflik yang tidak perlu.",s:[0,0,0,0,2]},
+  ]},
+  {t:"Menurutmu, 'sukses' yang paling bermakna adalah ketika...",h:"Tidak ada yang salah di sini — ini tentang apa yang benar-benar kamu rasakan.",o:[
+    {t:"Orang-orang melihatku, mendengarkanku, dan terinspirasi oleh yang kulakukan.",s:[2,0,0,0,0]},
+    {t:"Aku berhasil menciptakan sesuatu yang orisinal dan meninggalkan jejak nyata.",s:[0,2,0,0,0]},
+    {t:"Aku mencapai target yang ditetapkan dan hasilnya bisa diukur.",s:[0,0,2,0,0]},
+    {t:"Aku bisa memberikan kehidupan yang stabil untuk orang-orang yang kusayangi.",s:[0,0,0,2,0]},
+    {t:"Aku merasa damai, bebas, dan bisa membantu orang dengan caraku sendiri.",s:[0,0,0,0,2]},
+  ]},
+];
+
+// ─────────────────────────────────────────
+// DATA TIPE — Bara, Tumbuh, Baja, Bumi, Arus
+// ─────────────────────────────────────────
+const TIPE=[
+  { // 0 — Bara
+    nama:"Bara",kode:"BARA",emoji:"🔥",
+    color:"var(--bara)",bg:"var(--bara-bg)",border:"var(--bara-bd)",
+    quote:{pelajar:"Kamu bukan malas. Kamu hanya belum menemukan semangat yang benar-benar menyalakanmu.",guru:"Kamu bukan sekadar pengajar. Kamu adalah energi yang menggerakkan orang lain.",founder:"Kamu bukan tidak konsisten. Kamu hanya butuh panggung yang tepat untuk menyala.",ibu:"Kamu bukan terlalu emosional. Kamu adalah kehangatan yang orang lain cari.",profesional:"Kamu bukan tidak produktif. Kamu cuma perlu lingkungan yang benar-benar mendukungmu.",kreator:"Kamu bukan tidak berbakat. Kamu hanya perlu audiens yang bisa merasakan energimu.",lainnya:"Kamu bukan mudah menyerah. Kamu hanya perlu alasan yang kuat untuk terus menyala."},
+    ss_quote:"Kamu bukan malas.\nKamu hanya belum menemukan\nsemangat yang benar-benar menyalakanmu.",
+    keywords:["Ekspresif","Berpengaruh","Mood-driven"],
+    qi_kekuatan:["menginspirasi","mempengaruhi","membangun relasi"],
+    qi_hambatan:["mood-dependent","butuh apresiasi","inkonsistensi"],
+    qi_butuh:["lingkungan suportif","apresiasi rutin","tujuan emosional"],
+    summary:["cenderung lebih mudah bergerak saat ada dukungan dari orang sekitar","cenderung memiliki energi yang menular dan kemampuan memengaruhi orang lain","biasanya belajar lebih efektif saat ada koneksi emosional dengan materinya","cenderung lebih produktif saat ada yang melihat dan mengapresiasi prosesmu"],
+    confusion_bukan:"malas atau tidak peduli.",
+    confusion_tetapi:["kamu cenderung lebih butuh motivasi eksternal dari rata-rata orang","energimu kemungkinan besar sangat bergantung pada suasana dan dukungan sekitar","tanpa itu, kamu bisa lebih cepat kehilangan arah dari yang kamu sadari"],
+    confusion_trigger:["tidak ada yang mengapresiasi usahamu","suasana terasa dingin atau tidak mendukung","merasa sendirian dalam prosesnya"],
+    belajar_tags:["Diskusi langsung","Rekam & dengar ulang","Bersama orang lain","Koneksi emosional"],
+    belajar_desc:"Kamu cenderung lebih cepat memahami sesuatu saat ada interaksi manusiawi — bukan belajar sendiri dengan buku. Rekam penjelasan dan dengar ulang sampai terasa benar-benar masuk.",
+    kekuatan:["kemampuan memengaruhi dan menginspirasi orang lain","komunikasi hangat yang membuat orang merasa didengar","membangun relasi yang bermakna dalam waktu singkat"],
+    hambatan:["cenderung kehilangan semangat saat tidak ada apresiasi","konsistensi di hari-hari tanpa motivasi eksternal bisa menjadi tantangan","terlalu bergantung pada mood dan suasana hati"],
+    hambatan_note:"Terutama saat merasa tidak dilihat atau diabaikan oleh lingkungan sekitar.",
+    dark_mirror:"Kadang kamu terlihat bersemangat di luar, padahal di dalam kamu sedang mencari seseorang yang benar-benar melihatmu — bukan hanya apa yang kamu hasilkan.",
+    mengapa:["jawabanmu menunjukkan kebutuhan kuat akan koneksi emosional","kamu cenderung mengukur produktivitas dari seberapa kamu merasa dilihat","pola respons tekananmu menunjukkan energi yang bergantung pada lingkungan"],
+    growth_pills:["Komunikasi","Kepemimpinan","Konten","Pendidikan","Public Speaking"],
+    growth_desc:"Kamu cenderung berkembang lebih cepat di lingkungan yang suportif dan memberimu panggung untuk berbagi.",
+    goldar_bonus:{O:"Energi ekspresifmu kemungkinan makin kuat dan percaya diri.",A:"Ada sisi analitis yang cenderung menyeimbangkan emosimu.",B:"Kreativitas dan visi yang melengkapi semangatmu.",AB:"Kepraktisan yang cenderung menjangkar energimu agar lebih terarah."}
+  },
+  { // 1 — Tumbuh
+    nama:"Tumbuh",kode:"TUMBUH",emoji:"🌿",
+    color:"var(--tumbuh)",bg:"var(--tumbuh-bg)",border:"var(--tumbuh-bd)",
+    quote:{pelajar:"Kamu bukan lambat belajar. Kamu hanya perlu memahami 'kenapa' sebelum bisa memahami 'bagaimana'.",guru:"Kamu bukan guru biasa. Kamu membangun cara pandang, bukan sekadar menyampaikan materi.",founder:"Kamu bukan tidak fokus. Kamu hanya sedang menunggu gambaran besar yang benar-benar masuk akal.",ibu:"Kamu bukan perfeksionis berlebihan. Kamu punya standar tinggi karena kamu peduli.",profesional:"Kamu bukan susah diatur. Kamu hanya butuh memahami alasannya sebelum bisa bergerak sepenuh hati.",kreator:"Kamu bukan kekurangan ide. Kamu kelebihan ide — yang perlu diselesaikan hanya satu.",lainnya:"Kamu bukan tidak konsisten. Kamu hanya sulit berkembang di sistem yang tidak sesuai cara berpikirmu."},
+    ss_quote:"Kamu bukan tidak konsisten.\nKamu hanya sulit berkembang\ndi sistem yang salah.",
+    keywords:["Visioner","Kreatif","Big Picture"],
+    qi_kekuatan:["melihat pola besar","orisinal","menghubungkan ide"],
+    qi_hambatan:["ide tidak tuntas","keras kepala","perlu pemanasan"],
+    qi_butuh:["gambaran besar dulu","kebebasan eksplorasi","satu fokus jelas"],
+    summary:["cenderung melihat pola dan kemungkinan yang orang lain sering lewatkan","biasanya membutuhkan gambaran besar lebih dulu sebelum bisa masuk ke detail","cenderung memiliki standar tinggi untuk setiap karya yang dihasilkan","kemungkinan belajar paling dalam saat bebas mengeksplorasi"],
+    confusion_bukan:"malas atau tidak konsisten.",
+    confusion_tetapi:["kamu kemungkinan membutuhkan 'pemanasan' lebih lama dari rata-rata orang","tanpa makna yang jelas, motivasimu cenderung sulit tersulut","kamu biasanya menyimpan banyak hal di kepala sebelum benar-benar bergerak"],
+    confusion_trigger:["dipaksa mengikuti langkah-langkah kaku tanpa konteks besar","tidak tahu 'untuk apa' sesuatu dipelajari","terlalu banyak detail teknis sebelum gambaran besarnya jelas"],
+    belajar_tags:["Gambaran besar dulu","Visual sederhana","Eksplorasi bebas","Diskusi ide"],
+    belajar_desc:"Kamu cenderung lebih cepat memahami sesuatu saat sudah tahu 'kenapa' dan 'untuk apa' sebelum masuk ke 'bagaimana'. Jangan paksa langkah-langkah sebelum konteksnya jelas.",
+    kekuatan:["melihat pola besar dan menghubungkan banyak hal menjadi ide baru","kreativitas orisinal yang cenderung susah ditiru","kemampuan merangkai gagasan dan storytelling yang kuat"],
+    hambatan:["ide cenderung menumpuk tanpa ada yang benar-benar selesai","sulit fokus pada satu arah terlalu lama","cenderung mulai banyak hal sebelum yang sebelumnya tuntas"],
+    hambatan_note:"Terutama saat tidak ada sistem yang memaksamu menyelesaikan sesuatu.",
+    dark_mirror:"Kamu sering melihat potensi besar di ide-idemu — tapi diam-diam tahu bahwa banyak dari ide itu masih terkubur di kepala, belum pernah benar-benar dimulai.",
+    mengapa:["jawabanmu menunjukkan preferensi kuat pada eksplorasi dan gambaran besar","pola belajarmu menunjukkan kebutuhan akan makna sebelum bisa bergerak","kamu cenderung menghindari sistem kaku dan lebih nyaman dengan kebebasan kreatif"],
+    growth_pills:["Kreativitas","Konten","Bisnis edukasi","Desain","Strategi"],
+    growth_desc:"Kamu cenderung berkembang paling cepat di lingkungan yang menghargai ide orisinal dan memberimu ruang untuk bereksperimen.",
+    goldar_bonus:{O:"Semangat dan kepercayaan diri untuk membawa ide ke panggung.",A:"Presisi yang cenderung membuatmu lebih terstruktur saat mengeksekusi ide.",B:"Double kreativitas — visi dan imajinasi yang sangat kuat.",AB:"Ketekunan yang cenderung membantu menyelesaikan apa yang sudah dimulai."}
+  },
+  { // 2 — Baja
+    nama:"Baja",kode:"BAJA",emoji:"⚙️",
+    color:"var(--baja)",bg:"var(--baja-bg)",border:"var(--baja-bd)",
+    quote:{pelajar:"Kamu bukan lambat. Kamu hanya tidak mau bergerak sebelum sistemnya benar-benar masuk akal.",guru:"Kamu bukan kaku. Kamu membangun fondasi yang kokoh agar muridmu tidak mudah goyah.",founder:"Kamu bukan terlalu analitis. Kamu hanya butuh data yang cukup sebelum bisa yakin bergerak.",ibu:"Kamu bukan terlalu ketat. Kamu peduli pada kualitas karena kamu tahu standar seperti apa yang terbaik.",profesional:"Kamu bukan perfeksionis berlebihan. Kamu hanya memiliki standar yang tidak semua orang punya.",kreator:"Kamu bukan tidak kreatif. Kamu kreatif dengan cara yang lebih terstruktur dan presisi.",lainnya:"Kamu bukan lambat berkembang. Kamu hanya perlu sistem yang masuk akal sebelum bisa sepenuhnya bergerak."},
+    ss_quote:"Kamu bukan lambat berkembang.\nKamu hanya perlu sistem\nyang benar-benar masuk akal dulu.",
+    keywords:["Analitis","Sistematis","Problem Solver"],
+    qi_kekuatan:["berpikir logis","problem solver","membangun sistem"],
+    qi_hambatan:["perfeksionisme","terlalu kalkulatif","sulit memulai"],
+    qi_butuh:["tujuan terukur","sistem yang jelas","izin untuk memulai"],
+    summary:["cenderung memproses informasi secara logis dan terstruktur","biasanya tidak puas sebelum memahami sesuatu sampai ke akar-akarnya","cenderung bekerja paling efektif dengan target dan timeline yang jelas","kemungkinan menemukan solusi saat orang lain masih bingung dengan masalahnya"],
+    confusion_bukan:"kaku atau tidak kreatif.",
+    confusion_tetapi:["perfeksionismemu cenderung membuatmu sulit mulai sebelum 'siap sempurna'","kamu biasanya butuh logika yang masuk akal sebelum bisa bergerak sepenuh hati","tanpa sistem yang jelas, energimu bisa terbuang ke arah yang tidak produktif"],
+    confusion_trigger:["harus bekerja tanpa sistem atau arah yang jelas","berinteraksi dengan cara kerja yang tidak logis","dipaksa berkompromi dengan standar yang lebih rendah"],
+    belajar_tags:["Kerangka sistematis","Catat sambil belajar","Repetisi terstruktur","Target jelas"],
+    belajar_desc:"Kamu cenderung lebih cepat memahami sesuatu lewat skema dan kerangka yang logis. Catat sambil mendengar, dan buat target yang spesifik sebelum mulai belajar.",
+    kekuatan:["berpikir strategis dan cenderung menemukan solusi dari masalah yang rumit","membangun sistem yang efisien dan bisa direplikasi","analisis mendalam yang tidak semua orang miliki"],
+    hambatan:["perfeksionisme yang cenderung menghambat untuk memulai","terlalu banyak kalkulasi sebelum bergerak","sulit mendelegasikan karena standar yang sangat tinggi"],
+    hambatan_note:"Terutama saat merasa kondisinya belum cukup ideal untuk mulai.",
+    dark_mirror:"Kadang kamu terlihat sangat yakin dengan logikamu — tapi diam-diam ada bagian dari kamu yang takut kalau setelah semua persiapannya matang, hasilnya tetap tidak sempurna.",
+    mengapa:["jawabanmu menunjukkan preferensi kuat pada logika dan sistem","pola belajarmu menunjukkan kebutuhan akan kerangka yang jelas sebelum bergerak","kamu cenderung mengukur kemajuan dari hasil yang terukur dan bisa divalidasi"],
+    growth_pills:["Teknologi","Analisis data","Strategi","Pendidikan","Riset"],
+    growth_desc:"Kamu cenderung berkembang paling cepat di lingkungan yang menghargai presisi, logika, dan hasil kerja yang terukur.",
+    goldar_bonus:{O:"Kepercayaan diri yang cenderung membuat logikamu lebih berani tampil.",A:"Double presisi — ketajaman analisis yang sangat kuat.",B:"Kreativitas yang cenderung melunakkan kekakuan sistemmu.",AB:"Ketekunan ekstra yang memperkuat konsistensimu."}
+  },
+  { // 3 — Bumi
+    nama:"Bumi",kode:"BUMI",emoji:"🏔️",
+    color:"var(--bumi)",bg:"var(--bumi-bg)",border:"var(--bumi-bd)",
+    quote:{pelajar:"Kamu bukan lambat. Kamu sedang membangun pemahaman yang tidak mudah goyah.",guru:"Kamu bukan terlalu kaku dalam metode. Kamu sedang memberi pondasi yang muridmu butuhkan.",founder:"Kamu bukan terlalu lambat bergerak. Kamu sedang memastikan setiap langkah punya fondasi yang kuat.",ibu:"Kamu bukan terlalu protektif. Kamu mencintai dengan cara yang konsisten dan bisa diandalkan.",profesional:"Kamu bukan tidak ambisius. Kamu membangun sesuatu yang bertahan lama, bukan hanya terlihat cepat.",kreator:"Kamu bukan kurang ide. Kamu sedang memastikan satu ide ini benar-benar matang sebelum keluar.",lainnya:"Kamu bukan tidak mau berkembang. Kamu hanya perlu fondasi yang kuat sebelum bisa naik lebih tinggi."},
+    ss_quote:"Kamu bukan lambat berkembang.\nKamu sedang membangun\nfondasi yang tidak mudah goyah.",
+    keywords:["Tekun","Setia","Bisa Diandalkan"],
+    qi_kekuatan:["konsistensi","memori kuat","bisa diandalkan"],
+    qi_hambatan:["menunggu sempurna","sulit adaptasi","terlalu keras pada diri"],
+    qi_butuh:["waktu yang cukup","lingkungan stabil","izin untuk tidak sempurna"],
+    summary:["cenderung menyerap informasi secara mendalam meski butuh waktu lebih lama","biasanya memiliki memori yang kuat untuk hal-hal yang sudah dipelajari","cenderung bekerja paling baik dengan rutinitas yang konsisten","kemungkinan menjadi orang yang paling bisa diandalkan di sekitarmu"],
+    confusion_bukan:"lambat atau tidak mau berkembang.",
+    confusion_tetapi:["kamu cenderung memproses informasi lebih dalam dari rata-rata — butuh lebih banyak waktu","seringkali sulit memulai karena kecenderungan menunggu kondisi yang lebih sempurna","pengulangan dan ketekunan adalah cara berpikirmu — bukan kelemahan"],
+    confusion_trigger:["dipaksa belajar atau memutuskan terlalu cepat","perubahan mendadak tanpa persiapan","tidak ada panduan atau sistem yang jelas"],
+    belajar_tags:["Pengulangan bertahap","Catat sambil dengar","Sistem konsisten","Fakta & bukti"],
+    belajar_desc:"Kamu cenderung lebih cepat memahami sesuatu lewat pengulangan yang teratur dan metode yang konsisten. Tidak perlu terburu-buru — kedalamanmu adalah kekuatan.",
+    kekuatan:["konsistensi jangka panjang yang cenderung sulit ditiru orang lain","memori kuat untuk materi yang sudah dipelajari secara mendalam","ketelitian dan keandalan dalam menyelesaikan tanggung jawab"],
+    hambatan:["cenderung menunggu kondisi sempurna sebelum mulai","sulit beradaptasi saat ada perubahan mendadak","bisa terlalu keras pada diri sendiri kalau hasilnya tidak sesuai standar"],
+    hambatan_note:"Terutama saat merasa belum 'siap' padahal sebenarnya sudah lebih dari cukup.",
+    dark_mirror:"Kamu sering menjadi orang yang paling bisa diandalkan oleh orang lain — tapi diam-diam, kamu juga yang paling jarang meminta bantuan saat kamu sendiri sedang kesulitan.",
+    mengapa:["jawabanmu menunjukkan preferensi kuat pada konsistensi dan fakta yang terverifikasi","pola belajarmu menunjukkan kebutuhan akan pengulangan dan waktu yang cukup","kamu cenderung menghindari perubahan mendadak dan lebih nyaman dengan keteraturan"],
+    growth_pills:["Pendidikan","Keuangan","Manajemen","Penelitian","Bisnis stabil"],
+    growth_desc:"Kamu cenderung berkembang paling cepat di lingkungan yang menghargai ketekunan dan memberimu waktu untuk bertumbuh secara mendalam.",
+    goldar_bonus:{O:"Kepercayaan diri yang cenderung membuatmu lebih mudah tampil dan berbagi.",A:"Ketajaman analitis yang melengkapi ketekunanmu.",B:"Kreativitas dan fleksibilitas yang cenderung menyeimbangkan sifat sistematismu.",AB:"Double ketekunan — kesetiaan dan konsistensimu sangat kuat."}
+  },
+  { // 4 — Arus
+    nama:"Arus",kode:"ARUS",emoji:"💧",
+    color:"var(--arus)",bg:"var(--arus-bg)",border:"var(--arus-bd)",
+    quote:{pelajar:"Kamu bukan tidak fokus. Kamu hanya tidak bisa berkembang di bawah tekanan yang tidak perlu.",guru:"Kamu bukan kurang tegas. Kamu memimpin dengan cara yang membuat orang merasa aman untuk belajar.",founder:"Kamu bukan tidak ambisius. Kamu sedang mencari cara berkembang yang selaras dengan nilai-nilaimu.",ibu:"Kamu bukan terlalu santai. Kamu sedang menciptakan ruang aman yang keluargamu butuhkan.",profesional:"Kamu bukan tidak produktif. Kamu hanya perlu lingkungan yang benar-benar mendukung untuk bisa mengalir.",kreator:"Kamu bukan tidak konsisten. Kamu hanya bergerak mengikuti ritme yang tidak semua orang pahami.",lainnya:"Kamu bukan tidak ambisius. Kamu hanya mendefinisikan sukses dengan cara yang berbeda dari kebanyakan orang."},
+    ss_quote:"Kamu bukan tidak fokus.\nKamu hanya tidak bisa berkembang\ndi bawah tekanan yang tidak perlu.",
+    keywords:["Spontan","Naluriah","Penolong"],
+    qi_kekuatan:["empati tinggi","fleksibel","adaptif"],
+    qi_hambatan:["sulit menuntaskan","menghindari konflik","berpindah arah"],
+    qi_butuh:["suasana nyaman","bimbingan arah","satu fokus tuntas"],
+    summary:["cenderung bergerak mengikuti intuisi dan perasaan lebih dari rencana yang kaku","biasanya memiliki empati tinggi dan kepekaan terhadap suasana sekitar","cenderung lebih produktif saat lingkungannya nyaman dan tanpa tekanan berlebihan","kemungkinan menemukan kepuasan dari membantu dan melayani orang lain"],
+    confusion_bukan:"malas atau tidak ambisius.",
+    confusion_tetapi:["tekanan yang terlalu besar kemungkinan justru bisa membekukan produktivitasmu","kamu cenderung butuh suasana yang nyaman sebelum bisa benar-benar fokus","terlalu banyak hal sekaligus bisa membuatmu berhenti sebelum selesai"],
+    confusion_trigger:["suasana yang penuh konflik atau tekanan berlebihan","dipaksa mengikuti struktur yang kaku dan tidak fleksibel","terlalu banyak hal yang harus diselesaikan sekaligus"],
+    belajar_tags:["Suasana nyaman","Musik latar","Bimbingan dekat","Tanpa tekanan"],
+    belajar_desc:"Kamu cenderung lebih cepat memahami sesuatu saat suasana belajarnya terasa aman dan tidak menghakimi. Belajar dengan musik latar yang nyaman kemungkinan sangat membantu.",
+    kekuatan:["empati dan kepekaan terhadap perasaan orang lain","kemampuan beradaptasi dan mengalir di berbagai situasi","membawa ketenangan dan harmoni dalam lingkungan yang tegang"],
+    hambatan:["cenderung sulit menyelesaikan apa yang sudah dimulai","terlalu sering menghindari konflik hingga kebutuhanmu sendiri terabaikan","berpindah-pindah arah mengikuti apa yang terasa nyaman saat itu"],
+    hambatan_note:"Terutama saat tidak ada yang memandumu untuk tetap pada satu arah.",
+    dark_mirror:"Kadang kamu terlihat tenang dan mengalir — tapi isi kepalamu jauh lebih ramai dari yang kamu tunjukkan. Kamu hanya memilih untuk tidak memperlihatkannya.",
+    mengapa:["jawabanmu menunjukkan preferensi kuat pada intuisi dan kenyamanan","pola belajarmu menunjukkan kebutuhan akan suasana yang aman dan tidak memaksa","kamu cenderung menghindari konflik dan lebih memilih mengalir mengikuti situasi"],
+    growth_pills:["Konseling","Kesehatan holistik","Pendidikan","Seni","Pengabdian"],
+    growth_desc:"Kamu cenderung berkembang paling cepat di lingkungan yang suportif, tidak menghakimi, dan memberimu ruang untuk berkontribusi dengan caramu sendiri.",
+    goldar_bonus:{O:"Dorongan ekstra untuk lebih berani tampil dan berekspresi.",A:"Struktur dan sistem yang cenderung membantumu lebih terarah.",B:"Kreativitas dan visi yang cenderung memberi arah pada aliranmu.",AB:"Ketekunan yang cenderung membantu menuntaskan apa yang sudah dimulai."}
+  }
+];
+
+// ─────────────────────────────────────────
+// STATE
+// ─────────────────────────────────────────
+let curQ=0, ans=new Array(QS.length).fill(null), user={}, resultData=null;
+
+// ─────────────────────────────────────────
+// UTILS
+// ─────────────────────────────────────────
+function showScreen(id){document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));document.getElementById(id).classList.add('active');window.scrollTo({top:0,behavior:'smooth'});}
+function setPbar(p){document.getElementById('pbarFill').style.width=p+'%';}
+function mkLi(t,c=''){return`<li${c?` style="color:${c}"`:''} >${t}</li>`;}
+function genKode(tipeKode,secondKode){
+  const d=new Date();
+  const ds=String(d.getDate()).padStart(2,'0')+String(d.getMonth()+1).padStart(2,'0')+String(d.getFullYear()).slice(-2);
+  const r=Math.random().toString(36).slice(2,4).toUpperCase();
+  return`MH-${tipeKode}-${secondKode}-${ds}-${r}`;
+}
+
+// ─────────────────────────────────────────
+// QUIZ
+// ─────────────────────────────────────────
+function mulaiQuiz(){
+  const nama=document.getElementById('fNama').value.trim();
+  if(!nama){document.getElementById('fNama').focus();return;}
+  user={nama,profesi:document.getElementById('fProfesi').value||'lainnya',tgl:document.getElementById('fTgl').value,goldar:document.getElementById('fGoldar').value};
+  curQ=0;ans=new Array(QS.length).fill(null);
+  showScreen('sQuiz');renderQ();
+}
+
+function renderQ(){
+  const q=QS[curQ];
+  setPbar((curQ/QS.length)*100);
+  document.getElementById('qNum').textContent=String(curQ+1).padStart(2,'0');
+  document.getElementById('qText').textContent=q.t;
+  const h=document.getElementById('qHint');
+  h.textContent=q.h||'';h.style.display=q.h?'block':'none';
+  // Dots
+  const d=document.getElementById('qDots');d.innerHTML='';
+  QS.forEach((_,i)=>{const el=document.createElement('div');el.className='q-dot'+(i<curQ?' done':i===curQ?' current':'');d.appendChild(el);});
+  // Options
+  const L=['A','B','C','D','E'],c=document.getElementById('qOpts');c.innerHTML='';
+  q.o.forEach((o,i)=>{
+    const div=document.createElement('div');
+    div.className='opt'+(ans[curQ]===i?' sel':'');
+    div.innerHTML=`<div class="opt-letter">${L[i]}</div><div class="opt-text">${o.t}</div>`;
+    div.onclick=()=>selectOpt(i);c.appendChild(div);
+  });
+  document.getElementById('btnPrev').disabled=curQ===0;
+  const bn=document.getElementById('btnNext');
+  bn.disabled=ans[curQ]===null;
+  bn.textContent=curQ===QS.length-1?'Lihat Hasilku ✨':'Lanjut →';
+}
+
+function selectOpt(i){
+  ans[curQ]=i;
+  document.querySelectorAll('.opt').forEach((el,j)=>el.classList.toggle('sel',j===i));
+  document.getElementById('btnNext').disabled=false;
+}
+function nextQ(){if(ans[curQ]===null)return;if(curQ<QS.length-1){curQ++;renderQ();}else{showLoading();}}
+function prevQ(){if(curQ>0){curQ--;renderQ();}}
+
+// ─────────────────────────────────────────
+// LOADING — cinematic steps
+// ─────────────────────────────────────────
+function showLoading(){
+  showScreen('sLoading');setPbar(100);
+  const steps=['ls0','ls1','ls2','ls3','ls4'];
+  const durations=[400,700,600,700,600];
+  let total=0;
+  steps.forEach((id,i)=>{
+    total+=durations[i];
+    setTimeout(()=>{
+      if(i>0) document.getElementById(steps[i-1]).className='l-step done';
+      document.getElementById(id).className='l-step active';
+      document.getElementById('lTrack').style.width=((i+1)/steps.length*100)+'%';
+    },total-durations[i]);
+  });
+  setTimeout(()=>{
+    document.getElementById(steps[steps.length-1]).className='l-step done';
+    buildResult();
+  },total+400);
+}
+
+// ─────────────────────────────────────────
+// SCORING & RENDER
+// ─────────────────────────────────────────
+function buildResult(){
+  const scores=[0,0,0,0,0];
+  QS.forEach((q,qi)=>{if(ans[qi]!==null) q.o[ans[qi]].s.forEach((s,ti)=>scores[ti]+=s);});
+  const total=scores.reduce((a,b)=>a+b,0);
+  const maxS=Math.max(...scores);
+  const tIdx=scores.indexOf(maxS);
+  const sorted=scores.map((s,i)=>({s,i})).sort((a,b)=>b.s-a.s);
+  const secondIdx=sorted[1].i;
+  resultData={tIdx,scores,total,user,secondIdx};
+  renderResult();showScreen('sHasil');
+}
+
+function renderResult(){
+  const {tIdx,scores,total,user,secondIdx}=resultData;
+  const T=TIPE[tIdx],S=TIPE[secondIdx];
+  const p=user.profesi||'lainnya';
+  const nama=user.nama||'Kamu';
+
+  // Kode unik
+  document.getElementById('kodeUnik').textContent=genKode(T.kode,S.kode);
+
+  // Quick Insight
+  const qi=document.getElementById('qiBox');
+  qi.style.background=T.bg;qi.style.border=`1px solid ${T.border}`;
+  document.getElementById('qiEmoji').textContent=T.emoji;
+  document.getElementById('qiTipe').textContent=T.nama;document.getElementById('qiTipe').style.color=T.color;
+  document.getElementById('qiKekuatan').innerHTML=T.qi_kekuatan.map(x=>mkLi(x)).join('');
+  document.getElementById('qiHambatan').innerHTML=T.qi_hambatan.map(x=>mkLi(x)).join('');
+  document.getElementById('qiButuh').innerHTML=T.qi_butuh.map(x=>mkLi(x)).join('');
+
+  // Score bars
+  const tNama=['🔥 Bara','🌿 Tumbuh','⚙️ Baja','🏔️ Bumi','💧 Arus'];
+  const tColor=['var(--bara)','var(--tumbuh)','var(--baja)','var(--bumi)','var(--arus)'];
+  const sorted=scores.map((s,i)=>({s,i})).sort((a,b)=>b.s-a.s);
+  document.getElementById('scoreBars').innerHTML=sorted.map(({s,i})=>{
+    const pct=total>0?Math.round((s/total)*100):0;
+    return`<div class="sc-row">
+      <div class="sc-name" style="color:${tColor[i]}">${tNama[i]}</div>
+      <div class="sc-track"><div class="sc-fill" style="width:${pct}%;background:${tColor[i]}"></div></div>
+      <div class="sc-pct" style="color:${tColor[i]}">${pct}%</div>
+    </div>`;
+  }).join('');
+
+  // Screenshot card
+  const ss=document.getElementById('ssCard');
+  ss.style.background=`linear-gradient(135deg,${T.bg},rgba(0,0,0,0))`;
+  ss.style.border=`1px solid ${T.border}`;
+  document.getElementById('ssEmoji').textContent=T.emoji;
+  document.getElementById('ssTipe').textContent=T.nama.toUpperCase();
+  document.getElementById('ssTipe').style.color=T.color;
+  document.getElementById('ssQuote').textContent=T.ss_quote;
+  document.getElementById('ssQuote').style.color=T.color;
+
+  // Summary
+  document.getElementById('outSummary').innerHTML=T.summary.map(s=>mkLi(s)).join('');
+
+  // Confusion
+  document.getElementById('outConfusion').innerHTML=`
+    <div class="c-sub">Kemungkinan besar ${nama} bukan...</div>
+    <p>${T.confusion_bukan}</p>
+    <div class="c-sub">Tetapi kamu cenderung</div>
+    <ul>${T.confusion_tetapi.map(s=>mkLi(s)).join('')}</ul>
+    <div class="c-sub" style="margin-top:14px">Biasanya mulai sulit berkembang saat</div>
+    <ul>${T.confusion_trigger.map(s=>mkLi(s)).join('')}</ul>`;
+
+  // Belajar
+  document.getElementById('outBelajarTags').innerHTML=T.belajar_tags.map(t=>`<span class="btag">${t}</span>`).join('');
+  document.getElementById('outBelajarDesc').textContent=T.belajar_desc;
+
+  // Kekuatan
+  document.getElementById('outKekuatan').innerHTML=T.kekuatan.map(s=>mkLi(s)).join('');
+
+  // Hambatan
+  document.getElementById('outHambatan').innerHTML=T.hambatan.map(s=>mkLi(s)).join('');
+  document.getElementById('outHambatanNote').textContent=T.hambatan_note;
+
+  // Dark mirror
+  document.getElementById('outDarkMirror').textContent=T.dark_mirror;
+
+  // Growth
+  document.getElementById('outGrowthPills').innerHTML=T.growth_pills.map(p=>`<span class="gpill">${p}</span>`).join('');
+  document.getElementById('outGrowthDesc').textContent=T.growth_desc;
+
+  // Mengapa
+  document.getElementById('outMengapa').innerHTML=T.mengapa.map(s=>mkLi(s)).join('');
+
+  // Bonus goldar
+  const gd=user.goldar;
+  const bg=document.getElementById('bonusGoldar');
+  if(gd&&gd!=='?'&&T.goldar_bonus[gd]){
+    bg.innerHTML=`<div class="bonus-card" style="background:${T.bg};border-color:${T.border}">
+      <div style="font-size:10px;text-transform:uppercase;letter-spacing:1.2px;font-weight:700;color:${T.color};margin-bottom:7px;">+10% Bonus Golongan Darah ${gd}</div>
+      <div style="font-size:14px;color:var(--text);line-height:1.65;">${T.goldar_bonus[gd]}</div>
+    </div>`;
+  } else {bg.innerHTML='';}
+}
+
+// ─────────────────────────────────────────
+// SIMPAN PDF (print window)
+// ─────────────────────────────────────────
+function simpanHasil(){
+  const T=TIPE[resultData.tIdx];const S=TIPE[resultData.secondIdx];
+  const {scores,total,user}=resultData;
+  const tNama=['Bara','Tumbuh','Baja','Bumi','Arus'];
+  const tEm=['🔥','🌿','⚙️','🏔️','💧'];
+  const sorted=scores.map((s,i)=>({s,i})).sort((a,b)=>b.s-a.s);
+  const scoreStr=sorted.map(({s,i})=>`${tEm[i]} ${tNama[i]}: ${total>0?Math.round((s/total)*100):0}%`).join('\n');
+  const kode=document.getElementById('kodeUnik').textContent;
+  const p=user.profesi||'lainnya';
+
+  const w=window.open('','_blank','width=520,height=700');
+  w.document.write(`<!DOCTYPE html><html><head><meta charset="UTF-8">
+  <title>MindHack Decode — ${user.nama}</title>
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;0,900;1,400&family=DM+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+  <style>
+  *{margin:0;padding:0;box-sizing:border-box;}
+  body{font-family:'DM Sans',sans-serif;background:#05080F;color:#E8F4FF;padding:40px 36px;min-height:100vh;-webkit-print-color-adjust:exact;print-color-adjust:exact;}
+  .header{text-align:center;margin-bottom:32px;padding-bottom:24px;border-bottom:1px solid rgba(255,255,255,0.08);}
+  .logo-txt{font-size:12px;text-transform:uppercase;letter-spacing:2px;color:#4ADE80;margin-bottom:20px;}
+  .emoji{font-size:52px;display:block;margin-bottom:12px;}
+  .tipe-label{font-size:11px;text-transform:uppercase;letter-spacing:2px;color:#8090A8;margin-bottom:6px;}
+  .tipe-name{font-family:'Playfair Display',serif;font-size:36px;font-weight:900;margin-bottom:8px;}
+  .tagline{font-family:'Playfair Display',serif;font-size:15px;font-style:italic;color:#8090A8;line-height:1.6;max-width:340px;margin:0 auto 16px;}
+  .kode{font-family:monospace;font-size:12px;color:#4ADE80;background:rgba(74,222,128,0.08);border:1px solid rgba(74,222,128,0.2);border-radius:8px;padding:5px 14px;display:inline-block;}
+  .section{background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.08);border-radius:14px;padding:18px 20px;margin-bottom:14px;}
+  .sec-title{font-size:10px;text-transform:uppercase;letter-spacing:1.5px;font-weight:700;color:#8090A8;margin-bottom:12px;}
+  .sec-body p{font-size:14px;color:#C0D0E8;line-height:1.7;margin-bottom:8px;}
+  .sec-body ul{list-style:none;display:flex;flex-direction:column;gap:6px;}
+  .sec-body ul li{font-size:13.5px;color:#C0D0E8;padding-left:14px;position:relative;line-height:1.55;}
+  .sec-body ul li::before{content:'·';position:absolute;left:0;color:#4ADE80;font-weight:900;}
+  .score-row{display:flex;align-items:center;gap:10px;margin-bottom:10px;}
+  .score-label{width:90px;font-size:12px;font-weight:600;}
+  .score-bar{flex:1;height:6px;background:rgba(255,255,255,0.06);border-radius:3px;overflow:hidden;}
+  .score-fill{height:100%;border-radius:3px;}
+  .score-pct{width:32px;font-size:12px;font-weight:700;text-align:right;}
+  .dark-box{background:rgba(56,189,248,0.05);border:1px solid rgba(56,189,248,0.15);border-radius:14px;padding:18px 20px;margin-bottom:14px;}
+  .dark-box p{font-family:'Playfair Display',serif;font-size:15px;font-style:italic;color:#E8F4FF;line-height:1.7;}
+  .footer{text-align:center;margin-top:32px;padding-top:20px;border-top:1px solid rgba(255,255,255,0.06);font-size:11px;color:#3D4F6A;line-height:1.7;}
+  .name-row{font-size:14px;color:#8090A8;margin-bottom:6px;}
+  @media print{body{background:#05080F!important;}}
+  </style>
+  <script>window.onload=()=>setTimeout(()=>window.print(),600);<\/script>
+  </head><body>
+  <div class="header">
+    <div class="logo-txt">MindHack Decode — Hasil Ringkas</div>
+    <span class="emoji">${T.emoji}</span>
+    <div class="tipe-label">Karakter Dominan</div>
+    <div class="tipe-name" style="color:#4ADE80">${T.nama}</div>
+    <div class="tagline">${T.ss_quote.replace(/\n/g,'<br>')}</div>
+    <div class="kode">${kode}</div>
+  </div>
+  <div class="name-row">Untuk: <strong>${user.nama}</strong> &nbsp;·&nbsp; ${new Date().toLocaleDateString('id-ID',{day:'numeric',month:'long',year:'numeric'})}</div>
+
+  <div class="section">
+    <div class="sec-title">Campuran Karakter</div>
+    <div class="sec-body">
+    ${sorted.map(({s,i})=>{const pct=total>0?Math.round((s/total)*100):0;const cs=['#FB923C','#4ADE80','#94A3B8','#F59E0B','#38BDF8'][i];return`<div class="score-row"><div class="score-label" style="color:${cs}">${tEm[i]} ${tNama[i]}</div><div class="score-bar"><div class="score-fill" style="width:${pct}%;background:${cs}"></div></div><div class="score-pct" style="color:${cs}">${pct}%</div></div>`;}).join('')}
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="sec-title">Confusion Decoder</div>
+    <div class="sec-body">
+      <p>Kemungkinan besar kamu bukan ${T.confusion_bukan}</p>
+      <ul>${T.confusion_tetapi.map(s=>`<li>${s}</li>`).join('')}</ul>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="sec-title">Pola Belajar</div>
+    <div class="sec-body"><p>${T.belajar_desc}</p></div>
+  </div>
+
+  <div class="section">
+    <div class="sec-title">Kekuatan Utama</div>
+    <div class="sec-body"><ul>${T.kekuatan.map(s=>`<li>${s}</li>`).join('')}</ul></div>
+  </div>
+
+  <div class="section">
+    <div class="sec-title">Yang Sering Menghambat</div>
+    <div class="sec-body"><ul>${T.hambatan.map(s=>`<li>${s}</li>`).join('')}</ul></div>
+  </div>
+
+  <div class="dark-box">
+    <p>${T.dark_mirror}</p>
+  </div>
+
+  <div class="section">
+    <div class="sec-title">Arah Growth</div>
+    <div class="sec-body"><p>${T.growth_desc}</p></div>
+  </div>
+
+  <div class="footer">
+    MindHack Decode adalah alat refleksi diri berbasis pola jawaban dan kecenderungan perilaku.<br>
+    Gunakan sebagai alat eksplorasi diri, bukan label permanen.<br><br>
+    🛒 lynk.id/mindhacklearning &nbsp;·&nbsp; © 2026 MindHack Learning
+  </div>
+  </body></html>`);
+  w.document.close();
+}
+
+function simpanJawaban(){
+  const T=TIPE[resultData.tIdx];
+  const {user}=resultData;
+  const kode=document.getElementById('kodeUnik').textContent;
+  const tgl=new Date().toLocaleDateString('id-ID',{day:'numeric',month:'long',year:'numeric'});
+  const L=['A','B','C','D','E'];
+
+  const w=window.open('','_blank','width=520,height=700');
+  w.document.write(`<!DOCTYPE html><html><head><meta charset="UTF-8">
+  <title>MindHack Decode — Jawaban Quiz ${user.nama}</title>
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700&family=DM+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+  <style>
+  *{margin:0;padding:0;box-sizing:border-box;}
+  body{font-family:'DM Sans',sans-serif;background:#05080F;color:#E8F4FF;padding:36px 32px;-webkit-print-color-adjust:exact;print-color-adjust:exact;}
+  .header{text-align:center;margin-bottom:28px;padding-bottom:20px;border-bottom:1px solid rgba(255,255,255,0.08);}
+  .logo{font-size:12px;text-transform:uppercase;letter-spacing:2px;color:#4ADE80;margin-bottom:12px;}
+  .title{font-family:'Playfair Display',serif;font-size:24px;font-weight:700;margin-bottom:6px;}
+  .meta{font-size:12px;color:#8090A8;margin-bottom:8px;}
+  .kode{font-family:monospace;font-size:12px;color:#4ADE80;background:rgba(74,222,128,0.08);border:1px solid rgba(74,222,128,0.2);border-radius:6px;padding:4px 12px;display:inline-block;}
+  .q-item{background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.07);border-radius:12px;padding:14px 16px;margin-bottom:10px;}
+  .q-num{font-size:10px;text-transform:uppercase;letter-spacing:1px;color:#4ADE80;font-weight:700;margin-bottom:6px;}
+  .q-text{font-size:13.5px;color:#E8F4FF;font-weight:600;margin-bottom:10px;line-height:1.55;}
+  .q-ans{font-size:13px;color:#C0D0E8;padding:8px 12px;background:rgba(74,222,128,0.07);border-radius:8px;border-left:2px solid #4ADE80;line-height:1.55;}
+  .q-letter{font-weight:700;color:#4ADE80;margin-right:6px;}
+  .result-box{background:rgba(74,222,128,0.07);border:1px solid rgba(74,222,128,0.25);border-radius:12px;padding:16px;text-align:center;margin-bottom:20px;}
+  .result-tipe{font-family:'Playfair Display',serif;font-size:22px;font-weight:700;color:#4ADE80;}
+  .footer{text-align:center;margin-top:24px;font-size:11px;color:#3D4F6A;line-height:1.7;border-top:1px solid rgba(255,255,255,0.06);padding-top:16px;}
+  @media print{body{background:#05080F!important;}}
+  </style>
+  <script>window.onload=()=>setTimeout(()=>window.print(),600);<\/script>
+  </head><body>
+  <div class="header">
+    <div class="logo">MindHack Decode — Arsip Jawaban Quiz</div>
+    <div class="title">Jawaban 15 Pertanyaan</div>
+    <div class="meta">Nama: <strong>${user.nama}</strong> &nbsp;·&nbsp; ${tgl}</div>
+    <div class="kode">${kode}</div>
+  </div>
+  <div class="result-box">
+    <div style="font-size:11px;color:#8090A8;margin-bottom:4px;">Hasil Karakter Dominan</div>
+    <div class="result-tipe">${T.emoji} ${T.nama}</div>
+  </div>
+  ${QS.map((q,qi)=>{
+    const aIdx=ans[qi];
+    const aText=aIdx!==null?q.o[aIdx].t:'(Tidak dijawab)';
+    const aLetter=aIdx!==null?L[aIdx]:'?';
+    return`<div class="q-item">
+      <div class="q-num">Pertanyaan ${String(qi+1).padStart(2,'0')}</div>
+      <div class="q-text">${q.t}</div>
+      <div class="q-ans"><span class="q-letter">${aLetter}.</span>${aText}</div>
+    </div>`;
+  }).join('')}
+  <div class="footer">
+    Dokumen ini adalah arsip pribadi jawaban quiz MindHack Decode.<br>
+    Kode hasil: ${kode}<br><br>
+    🛒 lynk.id/mindhacklearning &nbsp;·&nbsp; © 2026 MindHack Learning
+  </div>
+  </body></html>`);
+  w.document.close();
+}
+
+// ─────────────────────────────────────────
+// CTA & FORM
+// ─────────────────────────────────────────
+function mintaLaporan(){
+  if(user.nama) document.getElementById('lNamaDepan').value=user.nama;
+  if(user.tgl) document.getElementById('lTgl').value=user.tgl;
+  if(user.goldar&&user.goldar!=='?') document.getElementById('lGoldar').value=user.goldar;
+  showScreen('sForm');
+}
+
+function kirimKeWA(){
+  const nDepan=document.getElementById('lNamaDepan').value.trim();
+  const wa=document.getElementById('lWA').value.trim();
+  if(!nDepan||!wa){alert('Nama depan dan nomor WhatsApp wajib diisi.');return;}
+  const T=TIPE[resultData.tIdx];
+  const S=TIPE[resultData.secondIdx];
+  const {scores,total}=resultData;
+  const tNama=['Bara','Tumbuh','Baja','Bumi','Arus'];
+  const sorted=scores.map((s,i)=>({s,i})).sort((a,b)=>b.s-a.s);
+  const scoreStr=sorted.map(({s,i})=>`${tNama[i]}: ${total>0?Math.round((s/total)*100):0}%`).join(', ');
+  const kode=document.getElementById('kodeUnik').textContent;
+
+  const msg=`🌱 *PERMINTAAN LAPORAN LENGKAP — MindHack Decode*
+
+*HASIL QUIZ RINGKAS*
+Nama: ${nDepan} ${document.getElementById('lNamaBelakang').value}
+Kode Hasil: ${kode}
+Karakter Dominan: *${T.nama} ${T.emoji}*
+Nuansa Sekunder: ${S.nama} ${S.emoji}
+Distribusi: ${scoreStr}
+
+*DATA PRIBADI*
+Tempat Lahir: ${document.getElementById('lTempatLahir').value||'-'}
+Tanggal Lahir: ${document.getElementById('lTgl').value||'-'}
+Jam Lahir: ${document.getElementById('lJam').value||'-'}
+Golongan Darah: ${document.getElementById('lGoldar').value||'-'}
+Agama: ${document.getElementById('lAgama').value||'-'}
+
+*LATAR BELAKANG*
+Profesi/Jurusan: ${document.getElementById('lProfesi').value||'-'}
+Kesibukan Saat Ini: ${document.getElementById('lKesibukan').value||'-'}
+
+*KONTAK*
+WhatsApp: ${wa}
+Email: ${document.getElementById('lEmail').value||'-'}
+
+---
+_Saya ingin melanjutkan eksplorasi diri dengan laporan lengkap. Terima kasih!_ 🌱`;
+
+  window.open(`https://wa.me/6289541510985?text=${encodeURIComponent(msg)}`,'_blank');
+}
+
+function restart(){
+  curQ=0;ans=new Array(QS.length).fill(null);user={};
+  ['fNama','fTgl','fGoldar','fProfesi'].forEach(id=>{const el=document.getElementById(id);if(el)el.value='';});
+  setPbar(0);showScreen('sIntro');
+}
+</script>
+</body>
+</html>
